@@ -1,0 +1,14 @@
+#Stage 1-Build
+FROM node:16.18.1-alpine3.17 as builder
+#Create app directory
+WORKDIR /app
+
+COPY . .
+RUN npm install -g @angular/cli@14.2.11
+RUN npm install
+#RUN ng build --configuration=development
+RUN ng build --configuration=production
+
+#Stage 2-Deploy
+FROM nginx:stable-alpine
+COPY --from=builder /app/dist/navbar-snippet /usr/share/nginx/html
